@@ -1,38 +1,76 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
+import {
+  issueReward,
+  submitEwaste,
+  verifySubmission,
+} from "./services/blockchainService";
 
-const submissions = [
+const initialSubmissions = [
   {
     id: "EW001",
-    item: "Laptop",
+    category: "Laptop",
     icon: "💻",
     quantity: 1,
-    weight: "2.4 kg",
+    weight: 2.4,
+    description: "Demo verified laptop submission",
+    estimatedReward: 50,
+    finalReward: 50,
     status: "Verified",
-    reward: 50,
-    date: "Today, 09:42",
+    submittedAt: "2026-08-23T09:42:00",
+    verifiedAt: "2026-08-23T10:00:00",
+    transactionHash: null,
+    recycler: "Demo Recycler",
   },
   {
     id: "EW002",
-    item: "Mobile Phone",
+    category: "Mobile Phone",
     icon: "📱",
     quantity: 2,
-    weight: "0.6 kg",
+    weight: 0.6,
+    description: "Demo pending mobile phone submission",
+    estimatedReward: 50,
+    finalReward: 0,
     status: "Pending",
-    reward: 0,
-    date: "Yesterday, 17:21",
+    submittedAt: "2026-08-22T17:21:00",
+    verifiedAt: null,
+    transactionHash: null,
+    recycler: null,
   },
   {
     id: "EW003",
-    item: "Charger",
+    category: "Charger",
     icon: "🔌",
     quantity: 3,
-    weight: "0.4 kg",
+    weight: 0.4,
+    description: "Demo verified charger submission",
+    estimatedReward: 30,
+    finalReward: 30,
     status: "Verified",
-    reward: 30,
-    date: "Aug 16, 14:08",
+    submittedAt: "2026-08-16T14:08:00",
+    verifiedAt: "2026-08-16T15:00:00",
+    transactionHash: null,
+    recycler: "Demo Recycler",
   },
 ];
+
+const storageKey = "ewastefi_submissions";
+
+const loadSubmissions = () => {
+  try {
+    const savedSubmissions = localStorage.getItem(storageKey);
+    if (!savedSubmissions) {
+      return initialSubmissions;
+    }
+
+    const parsedSubmissions = JSON.parse(savedSubmissions);
+    return Array.isArray(parsedSubmissions)
+      ? parsedSubmissions
+      : initialSubmissions;
+  } catch {
+    return initialSubmissions;
+  }
+};
 
 const rewardRates = [
   { name: "Mobile Phone", icon: "📱", reward: 25 },
@@ -45,8 +83,11 @@ const rewardRates = [
 
 function App() {
   const [activePage, setActivePage] = useState("Dashboard");
+  const [role, setRole] = useState("User");
+  const [submissions, setSubmissions] = useState(loadSubmissions);
   const [walletConnected, setWalletConnected] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
+  const [validationMessage, setValidationMessage] = useState("");
   const [formData, setFormData] = useState({
     category: "Mobile Phone",
     quantity: 1,
@@ -58,6 +99,36 @@ function App() {
     (item) => item.name === formData.category
   )?.reward || 0;
   const estimatedReward = Number(formData.quantity) * selectedRate;
+
+  useEffect(() => {
+    localStorage.setItem(storageKey, JSON.stringify(submissions));
+  }, [submissions]);
+
+  const verifiedSubmissions = submissions.filter(
+    (submission) => submission.status === "Verified"
+  );
+  const totalRecycledWeight = verifiedSubmissions.reduce(
+    (total, submission) => total + Number(submission.weight || 0),
+    0
+  );
+  const totalRewards = verifiedSubmissions.reduce(
+    (total, submission) => total + Number(submission.finalReward || 0),
+    0
+  );
+
+  const formatDate = (date) =>
+    new Date(date).toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+    });
+
+  const getNextId = () => {
+    const highestId = submissions.reduce((highest, submission) => {
+      const numericId = Number(submission.id.replace("EW", ""));
+      return Number.isNaN(numericId) ? highest : Math.max(highest, numericId);
+    }, 0);
+    return `EW${String(highestId + 1).padStart(3, "0")}`;
+  };
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -73,11 +144,82 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setValidationMessage("");
+
+    if (!formData.category || Number(formData.quantity) < 1) {
+      setValidationMessage("Choose a category and enter a quantity of at least 1.");
+      return;
+    }
+
+    if (Number(formData.weight) <= 0) {
+      setValidationMessage("Enter a weight greater than 0 kg.");
+      return;
+    }
+
+    const simulatedSubmission = submitEwaste();
+    const newSubmission = {
+      id: getNextId(),
+      category: formData.category,
+      icon: rewardRates.find((item) => item.name === formData.category)?.icon,
+      quantity: Number(formData.quantity),
+      weight: Number(formData.weight),
+      description: formData.description,
+      estimatedReward,
+      finalReward: 0,
+      status: "Pending",
+      submittedAt: new Date().toISOString(),
+      verifiedAt: null,
+      transactionHash: null,
+      recycler: null,
+    };
+
+    setSubmissions((currentSubmissions) => [newSubmission, ...currentSubmissions]);
+    setFormData({
+      category: "Mobile Phone",
+      quantity: 1,
+      weight: "",
+      description: "",
+    });
     setShowNotification(true);
 
     setTimeout(() => {
       setShowNotification(false);
     }, 3000);
+
+    if (!simulatedSubmission.success) {
+      setValidationMessage("The simulated submission could not be processed.");
+    }
+  };
+
+  const updateSubmissionStatus = (id, nextStatus) => {
+    setSubmissions((currentSubmissions) =>
+      currentSubmissions.map((submission) => {
+        if (submission.id !== id || submission.status !== "Pending") {
+          return submission;
+        }
+
+        if (nextStatus === "Rejected") {
+          return {
+            ...submission,
+            status: "Rejected",
+            verifiedAt: null,
+            finalReward: 0,
+            recycler: "Demo Recycler",
+          };
+        }
+
+        const verification = verifySubmission();
+        const reward = issueReward();
+        return {
+          ...submission,
+          status: "Verified",
+          verifiedAt: new Date().toISOString(),
+          finalReward: submission.estimatedReward,
+          transactionHash: `${verification.transactionId} / ${reward.transactionId}`,
+          recycler: "Demo Recycler",
+        };
+      })
+    );
   };
 
   return (
@@ -182,6 +324,15 @@ function App() {
               ◔
             </button>
 
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              aria-label="Demo role"
+            >
+              <option>User</option>
+              <option>Recycler</option>
+            </select>
+
             <button
               className={`wallet-connect ${
                 walletConnected ? "connected" : ""
@@ -267,29 +418,29 @@ function App() {
             <StatCard
               icon="◈"
               label="Total Submissions"
-              value="12"
-              change="+3 this month"
+              value={submissions.length}
+              change="Saved in this browser"
             />
 
             <StatCard
               icon="⚖"
               label="E-Waste Recycled"
-              value="48.5 kg"
-              change="+12.4% this month"
+              value={`${totalRecycledWeight.toFixed(1)} kg`}
+              change="Verified submissions only"
             />
 
             <StatCard
               icon="✦"
               label="Rewards Earned"
-              value="340 EWF"
-              change="+80 EWF this month"
+              value={`${totalRewards} EWF`}
+              change="Verified rewards only"
             />
 
             <StatCard
               icon="✓"
               label="Verified Items"
-              value="8"
-              change="66.7% verification rate"
+              value={verifiedSubmissions.length}
+              change="Pending and rejected excluded"
             />
 
           </section>
@@ -403,6 +554,12 @@ function App() {
 
                 </div>
 
+                {validationMessage && (
+                  <p className="validation-message" role="alert">
+                    {validationMessage}
+                  </p>
+                )}
+
                 <button className="submit-button">
                   Submit for Verification
                   <span>→</span>
@@ -476,6 +633,42 @@ function App() {
 
           </section>
 
+          {role === "Recycler" && (
+            <section className="card recycler-panel">
+              <div className="card-heading">
+                <div>
+                  <span className="eyebrow">DEMO MODE</span>
+                  <h3>Recycler Verification</h3>
+                  <p>Frontend simulation. Review pending submissions before rewards are credited.</p>
+                </div>
+                <div className="step-number">02</div>
+              </div>
+
+              {submissions.filter((submission) => submission.status === "Pending").length === 0 ? (
+                <p className="empty-message">There are no pending submissions.</p>
+              ) : (
+                <div className="recycler-list">
+                  {submissions
+                    .filter((submission) => submission.status === "Pending")
+                    .map((submission) => (
+                      <div className="recycler-row" key={`review-${submission.id}`}>
+                        <div>
+                          <strong>{submission.id} · {submission.category}</strong>
+                          <span>{submission.quantity} item(s) · {submission.weight} kg · {formatDate(submission.submittedAt)}</span>
+                          <span>{submission.description || "No description provided"}</span>
+                          <span>Estimated reward: {submission.estimatedReward} EWF</span>
+                        </div>
+                        <div className="recycler-actions">
+                          <button className="submit-button" type="button" onClick={() => updateSubmissionStatus(submission.id, "Verified")}>Verify</button>
+                          <button className="view-button" type="button" onClick={() => updateSubmissionStatus(submission.id, "Rejected")}>Reject</button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              )}
+            </section>
+          )}
+
           {/* ACTIVITY + REWARDS */}
 
           <section className="bottom-grid">
@@ -508,9 +701,9 @@ function App() {
                     </div>
 
                     <div className="activity-info">
-                      <strong>{item.item}</strong>
+                      <strong>{item.category}</strong>
                       <span>
-                        {item.id} · {item.date}
+                        {item.id} · {formatDate(item.submittedAt)}
                       </span>
                     </div>
 
@@ -524,7 +717,9 @@ function App() {
                         className={`status ${
                           item.status === "Verified"
                             ? "verified"
-                            : "pending"
+                            : item.status === "Rejected"
+                              ? "rejected"
+                              : "pending"
                         }`}
                       >
                         {item.status}
@@ -532,8 +727,8 @@ function App() {
                     </div>
 
                     <div className="activity-reward">
-                      {item.reward > 0
-                        ? `+${item.reward} EWF`
+                      {item.finalReward > 0
+                        ? `+${item.finalReward} EWF`
                         : "—"}
                     </div>
 
@@ -566,9 +761,9 @@ function App() {
 
                 <span>AVAILABLE BALANCE</span>
 
-                <strong>340</strong>
+                <strong>{totalRewards}</strong>
 
-                <small>EWF tokens</small>
+                <small>EWF application reward units</small>
 
               </div>
 
@@ -595,6 +790,19 @@ function App() {
 
                 ))}
 
+              </div>
+
+              <div className="reward-history">
+                <span>REWARD HISTORY</span>
+                {verifiedSubmissions.map((submission) => (
+                  <div className="rate-row" key={`history-${submission.id}`}>
+                    <div>
+                      <strong>{submission.id}</strong>
+                      <span>{submission.category} · {formatDate(submission.verifiedAt)}</span>
+                    </div>
+                    <b>+{submission.finalReward} EWF</b>
+                  </div>
+                ))}
               </div>
 
             </div>

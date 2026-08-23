@@ -499,6 +499,74 @@ button {
   font-size: 8px;
 }
 
+.validation-message {
+  margin: 12px 0 0;
+  color: #ff9b84;
+  font-size: 11px;
+}
+
+.recycler-panel {
+  margin-top: 14px;
+  padding: 24px;
+}
+
+.recycler-panel .card-heading p {
+  max-width: 620px;
+}
+
+.recycler-list {
+  display: grid;
+  gap: 10px;
+}
+
+.recycler-row {
+  padding: 14px;
+  border: 1px solid #1a2b20;
+  border-radius: 9px;
+  background: #0b1710;
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.recycler-row strong,
+.recycler-row span {
+  display: block;
+}
+
+.recycler-row strong {
+  font-size: 12px;
+}
+
+.recycler-row span {
+  margin-top: 5px;
+  color: #748179;
+  font-size: 10px;
+}
+
+.recycler-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.recycler-actions .submit-button,
+.recycler-actions .view-button {
+  margin: 0;
+  padding: 10px 13px;
+}
+
+.empty-message {
+  color: #748179;
+  font-size: 12px;
+}
+
+.status.rejected {
+  color: #ff9b84;
+  background: rgba(255, 155, 132, .08);
+}
+
 /* =========================
    GRIDS
 ========================= */
