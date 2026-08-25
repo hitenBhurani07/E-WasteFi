@@ -10,13 +10,21 @@ import * as Contracts from "./index.js";
 
 declare module "@nomicfoundation/hardhat-ethers/types" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
-  getContractFactory(name: 'EWasteFi', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWasteFi__factory>
+  getContractFactory(name: 'EWasteRegistry', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWasteRegistry__factory>
+getContractFactory(name: 'IRewardVault', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.IRewardVault__factory>
+getContractFactory(name: 'EWasteRewardVault', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWasteRewardVault__factory>
 
-  getContractAt(name: 'EWasteFi', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWasteFi>
+  getContractAt(name: 'EWasteRegistry', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWasteRegistry>
+getContractAt(name: 'IRewardVault', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.IRewardVault>
+getContractAt(name: 'EWasteRewardVault', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWasteRewardVault>
 
-  deployContract(name: 'EWasteFi', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteFi>
+  deployContract(name: 'EWasteRegistry', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRegistry>
+deployContract(name: 'IRewardVault', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.IRewardVault>
+deployContract(name: 'EWasteRewardVault', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRewardVault>
 
-  deployContract(name: 'EWasteFi', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteFi>
+  deployContract(name: 'EWasteRegistry', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRegistry>
+deployContract(name: 'IRewardVault', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.IRewardVault>
+deployContract(name: 'EWasteRewardVault', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRewardVault>
 
     // default types
     getContractFactory(
