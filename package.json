@@ -1,13 +1,19 @@
 {
-  "name": "frontend",
+  "name": "e-wastefi",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "Decentralized electronic-waste recycling and reward platform",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "compile": "cd blockchain && npx hardhat compile",
+    "test": "cd blockchain && npx hardhat test",
+    "deploy:local": "cd blockchain && npx hardhat run scripts/deploy-all.js",
+    "deploy:ganache": "cd blockchain && npx hardhat run scripts/deploy-all.js --network ganache",
+    "export-abis": "cd blockchain && node scripts/export-abis.js"
   },
   "dependencies": {
     "ethers": "^6.17.0",

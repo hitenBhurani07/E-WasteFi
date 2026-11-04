@@ -1,0 +1,16 @@
+{
+  "network": "sepolia",
+  "chainId": "11155111",
+  "deployer": "0x4C37b46944e83C6615b1480f2d4e8cCdF455dF98",
+  "timestamp": "2026-03-20T12:00:00.000Z",
+  "contracts": {
+    "EWasteRegistry": "0x7CC2B7Cd0cDfB3D29f562c6a63821A812CF1ccf2",
+    "EWasteRewardVault": "0x4C8027D4fE6339FA9B764cA100af0cD7e20A032c",
+    "ChainlinkETHUSDFeed": "0x694AA1769357215DE4FAC081bf1f309aDC325306"
+  },
+  "verified": {
+    "EWasteRegistry": true,
+    "EWasteRewardVault": true
+  }
+}
+

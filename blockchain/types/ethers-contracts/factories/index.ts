@@ -2,4 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as eWasteRegistrySol from './EWasteRegistry.sol/index.js';
+export * as active from './active/index.js';
 export { EWasteRewardVault__factory } from './EWasteRewardVault__factory.js';

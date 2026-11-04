@@ -1228,3 +1228,1028 @@ button {
   }
 
 }
+
+
+/* ==========================================================================
+   MULTI-EXPERIMENT EXTENSIONS & PROTOCOL UI
+   ========================================================================== */
+
+/* --- Sidebar Scrollable Section --- */
+.sidebar-scrollable {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.sidebar-scrollable::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-scrollable::-webkit-scrollbar-thumb {
+  background: #17251c;
+  border-radius: 4px;
+}
+
+.nav-text {
+  flex: 1;
+}
+
+.nav-exp-tag {
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #718078;
+  font-weight: 600;
+}
+
+.nav-badge {
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(74, 222, 128, 0.15);
+  color: #4ade80;
+  font-weight: 600;
+}
+
+.switch-network-tag {
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #f59e0b;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.switch-network-tag:hover {
+  background: rgba(245, 158, 11, 0.25);
+}
+
+/* --- Spinning Icons --- */
+.spin {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* --- Transaction Status Banners --- */
+.tx-status-banner {
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid transparent;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tx-status-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.tx-status-awaiting {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+}
+
+.tx-status-confirming,
+.tx-status-submitted {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #60a5fa;
+}
+
+.tx-status-confirmed {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #4ade80;
+}
+
+.tx-status-failed,
+.tx-status-rejected {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+.tx-status-text strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.tx-error-msg {
+  display: block;
+  font-size: 11px;
+  margin-top: 3px;
+  opacity: 0.9;
+}
+
+.tx-hash-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.tx-explorer-btn {
+  color: inherit;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.tx-dismiss-btn {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 14px;
+  opacity: 0.7;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.tx-dismiss-btn:hover {
+  opacity: 1;
+}
+
+/* --- Empty States --- */
+.empty-state-card {
+  padding: 48px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-state-icon {
+  font-size: 38px;
+  margin-bottom: 12px;
+  opacity: 0.8;
+}
+
+.empty-state-title {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-family: "Space Grotesk", sans-serif;
+  color: #e9f3ed;
+}
+
+.empty-state-desc {
+  margin: 0 0 20px;
+  font-size: 13px;
+  color: #718078;
+  max-width: 440px;
+  line-height: 1.5;
+}
+
+.empty-state-btn {
+  padding: 10px 22px;
+  border-radius: 9px;
+  background: #183321;
+  border: 1px solid #285437;
+  color: #d7ff63;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.empty-state-btn:hover {
+  background: #20452d;
+  border-color: #38754e;
+}
+
+/* --- Page Header Layout --- */
+.page-container {
+  animation: fadeIn 0.3s ease;
+}
+
+.page-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.page-header-row h2 {
+  margin: 0 0 6px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 24px;
+  color: #e9f3ed;
+}
+
+.page-header-row p {
+  margin: 0;
+  font-size: 13px;
+  color: #718078;
+  max-width: 680px;
+  line-height: 1.5;
+}
+
+/* --- Category Chips Grid for Recycle Form --- */
+.category-chips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.category-chip {
+  padding: 12px 10px;
+  border-radius: 10px;
+  background: #0d1811;
+  border: 1px solid #1a2a1f;
+  color: #92a397;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.category-chip:hover {
+  border-color: #2a4732;
+  color: #e2ede5;
+}
+
+.category-chip.selected {
+  background: #14281c;
+  border-color: #4ade80;
+  color: #e9f3ed;
+  box-shadow: 0 0 14px rgba(74, 222, 128, 0.12);
+}
+
+.chip-icon {
+  font-size: 20px;
+}
+
+.chip-name {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.chip-reward {
+  font-size: 10px;
+  color: #4ade80;
+  font-weight: 600;
+}
+
+/* --- Guide Card in Recycle Page --- */
+.guide-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.guide-step-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.guide-step-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #162a1c;
+  border: 1px solid #285437;
+  color: #4ade80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.guide-step-item strong {
+  display: block;
+  font-size: 13px;
+  color: #e9f3ed;
+  margin-bottom: 3px;
+}
+
+.guide-step-item p {
+  margin: 0;
+  font-size: 12px;
+  color: #718078;
+  line-height: 1.5;
+}
+
+.guide-step-item code {
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.contract-address-box {
+  margin-top: 24px;
+  padding: 14px;
+  border-radius: 10px;
+  background: #0b1710;
+  border: 1px solid #1c3023;
+}
+
+.contract-address-box span {
+  display: block;
+  font-size: 9px;
+  font-weight: 700;
+  color: #53625a;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+}
+
+.contract-address-box code {
+  display: block;
+  font-size: 11px;
+  color: #cbd5e1;
+  word-break: break-all;
+  margin-bottom: 8px;
+}
+
+.text-link {
+  color: #4ade80;
+  font-size: 11px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.text-link:hover {
+  text-decoration: underline;
+}
+
+/* --- Recycler Panel Portal Styles --- */
+.warning-notice-banner {
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+  margin-bottom: 24px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.warning-notice-banner span {
+  font-size: 18px;
+}
+
+.warning-notice-banner strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 3px;
+}
+
+.warning-notice-banner p {
+  margin: 0;
+  font-size: 12px;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+.role-status-badge {
+  padding: 8px 16px;
+  border-radius: 10px;
+  background: #0d1811;
+  border: 1px solid #1c3023;
+  font-size: 12px;
+}
+
+.role-recycler {
+  color: #4ade80;
+}
+
+.role-user {
+  color: #94a3b8;
+}
+
+.table-controls-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filter-pill-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-pill {
+  padding: 7px 14px;
+  border-radius: 8px;
+  background: #0d1811;
+  border: 1px solid #1a2a1f;
+  color: #718078;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.filter-pill:hover {
+  color: #e2ede5;
+  background: #122117;
+}
+
+.filter-pill.active {
+  background: #162b1e;
+  border-color: #2e593c;
+  color: #d7ff63;
+}
+
+.filter-count {
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.search-box input {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #0d1811;
+  border: 1px solid #1c3023;
+  color: #e9f3ed;
+  font-size: 12px;
+  min-width: 260px;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #4ade80;
+}
+
+.recycler-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.recycler-row {
+  padding: 16px;
+  border-radius: 12px;
+  background: #0d1811;
+  border: 1px solid #192b1e;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.recycler-row-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.recycler-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.recycler-id-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sub-user-addr {
+  font-size: 11px;
+  color: #718078;
+}
+
+.sub-meta-stats {
+  display: flex;
+  gap: 8px;
+  font-size: 11px;
+  color: #92a397;
+}
+
+.recycler-row-reward {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.reward-calc {
+  text-align: right;
+}
+
+.reward-calc span {
+  display: block;
+  font-size: 9px;
+  color: #53625a;
+  letter-spacing: 0.6px;
+}
+
+.reward-calc strong {
+  font-size: 14px;
+  color: #4ade80;
+}
+
+.reward-tag-paid {
+  display: block;
+  font-size: 10px;
+  color: #10b981;
+}
+
+.verify-action-btn,
+.reject-action-btn,
+.issue-action-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.verify-action-btn {
+  background: #1b3d27;
+  color: #4ade80;
+  border: 1px solid #2e6641;
+}
+
+.verify-action-btn:hover:not(:disabled) {
+  background: #245234;
+}
+
+.reject-action-btn {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  margin-left: 6px;
+}
+
+.reject-action-btn:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+.issue-action-btn {
+  background: #d7ff63;
+  color: #0b190f;
+  font-weight: 700;
+}
+
+.issue-action-btn:hover:not(:disabled) {
+  background: #c3ec50;
+}
+
+.reward-issued-badge {
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* --- Activity Ledger Table --- */
+.activity-table-wrapper {
+  overflow-x: auto;
+}
+
+.activity-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+
+.activity-table th {
+  padding: 12px 14px;
+  color: #53625a;
+  font-size: 10px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  border-bottom: 1px solid #192b1e;
+}
+
+.activity-table td {
+  padding: 14px;
+  border-bottom: 1px solid #101e15;
+  color: #cbd5e1;
+}
+
+.activity-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.submission-id-tag {
+  font-family: monospace;
+  font-size: 11px;
+  background: #0b1710;
+  padding: 3px 6px;
+  border-radius: 4px;
+  border: 1px solid #1c3023;
+  color: #92a397;
+}
+
+.table-category-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cell-icon {
+  font-size: 16px;
+}
+
+.reward-cell-issued {
+  color: #4ade80;
+  font-weight: 600;
+}
+
+.reward-cell-est {
+  color: #718078;
+}
+
+/* --- Ecosystem Protocol Badges (Dashboard) --- */
+.defi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.defi-badge-item {
+  padding: 14px;
+  border-radius: 12px;
+  background: #0d1811;
+  border: 1px solid #192b1e;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.defi-badge-item:hover {
+  background: #122217;
+  border-color: #284c33;
+  transform: translateY(-2px);
+}
+
+.defi-item-icon {
+  font-size: 22px;
+}
+
+.defi-badge-item strong {
+  display: block;
+  font-size: 13px;
+  color: #e9f3ed;
+}
+
+.defi-badge-item small {
+  display: block;
+  font-size: 11px;
+  color: #718078;
+  margin-top: 2px;
+}
+
+.status-pill {
+  margin-left: auto;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.status-pill.live {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.status-pill.ready {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+}
+
+.status-pill.verified {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.status-pill.rejected {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+/* --- Vault & DeFi Tabs --- */
+.vault-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid #1a2c1f;
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.vault-tab-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #718078;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.vault-tab-btn:hover {
+  color: #e2ede5;
+  background: #101f15;
+}
+
+.vault-tab-btn.active {
+  background: #162a1c;
+  border-color: #2e593c;
+  color: #d7ff63;
+}
+
+.vault-input-box {
+  background: #0b1710;
+  border: 1px solid #1c3023;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.vault-input-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: #92a397;
+}
+
+.max-btn {
+  background: transparent;
+  border: none;
+  color: #4ade80;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.max-btn:hover {
+  text-decoration: underline;
+}
+
+.token-unit {
+  font-weight: 700;
+  color: #4ade80;
+  padding-left: 8px;
+  font-size: 13px;
+}
+
+.vault-preview-card {
+  padding: 14px;
+  border-radius: 10px;
+  background: rgba(22, 33, 25, 0.5);
+  border: 1px dashed #203828;
+  margin-bottom: 18px;
+}
+
+.preview-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #92a397;
+}
+
+.preview-row strong {
+  color: #d7ff63;
+  font-size: 13px;
+}
+
+.vault-preview-card small {
+  display: block;
+  margin-top: 6px;
+  color: #53625a;
+  font-size: 10px;
+}
+
+.action-buttons-row {
+  display: flex;
+  gap: 12px;
+}
+
+.secondary-button {
+  padding: 14px 20px;
+  border-radius: 10px;
+  background: #14281c;
+  border: 1px solid #274d35;
+  color: #d7e5da;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.secondary-button:hover:not(:disabled) {
+  background: #1b3827;
+  border-color: #386d4c;
+}
+
+/* --- Specification Lists --- */
+.spec-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.spec-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #132218;
+  font-size: 12px;
+}
+
+.spec-item span {
+  color: #718078;
+}
+
+.spec-item strong {
+  color: #e9f3ed;
+}
+
+.spec-item code {
+  color: #4ade80;
+  background: #09150e;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+/* --- Contract Deployment Setup Card --- */
+.deploy-setup-card {
+  border-color: #2c4a35;
+}
+
+.contract-config-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.deployment-snippet {
+  margin-top: 20px;
+  padding: 14px;
+  border-radius: 10px;
+  background: #07100b;
+  border: 1px solid #14261b;
+}
+
+.deployment-snippet strong {
+  display: block;
+  font-size: 11px;
+  color: #92a397;
+  margin-bottom: 8px;
+}
+
+.deployment-snippet code {
+  display: block;
+  color: #d7ff63;
+  font-size: 11px;
+  white-space: pre-wrap;
+  font-family: monospace;
+  line-height: 1.5;
+}
+
+/* --- Rewards Page Callout & History --- */
+.defi-callout-card {
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #0e1d14;
+  border: 1px solid #1f3b28;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.callout-icon {
+  font-size: 22px;
+}
+
+.defi-callout-card strong {
+  display: block;
+  font-size: 13px;
+  color: #e9f3ed;
+  margin-bottom: 4px;
+}
+
+.defi-callout-card p {
+  margin: 0;
+  font-size: 11px;
+  color: #718078;
+  line-height: 1.5;
+}
+
+.reward-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.reward-history-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #0d1811;
+  border: 1px solid #17281d;
+}
+
+.history-details {
+  flex: 1;
+}
+
+.history-details strong {
+  display: block;
+  font-size: 12px;
+  color: #e9f3ed;
+}
+
+.history-details span {
+  font-size: 11px;
+  color: #718078;
+}
+
+.reward-credited {
+  color: #4ade80;
+  font-size: 13px;
+}
+
+.reward-verified-pending {
+  color: #f59e0b;
+  font-size: 11px;
+}
+
+.stat-badge {
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(74, 222, 128, 0.15);
+  color: #4ade80;
+  font-weight: 600;
+}
