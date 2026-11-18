@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { formatAddress, switchToSepolia } from "../blockchain/wallet";
+import { formatAddress, switchToSepolia, switchToLocalhost } from "../blockchain/wallet";
 
 export function TopBar({
   activePage,
@@ -254,6 +254,43 @@ export function TopBar({
                   >
                     <span>⇄</span> Switch MetaMask Account
                   </button>
+
+                  <div style={{ display: "flex", gap: "6px" }}>
+                    <button
+                      onClick={() => switchToSepolia().catch(console.error)}
+                      style={{
+                        flex: 1,
+                        backgroundColor: "rgba(255, 255, 255, 0.05)",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                        color: "#94a3b8",
+                        borderRadius: "6px",
+                        padding: "6px 8px",
+                        fontSize: "0.75rem",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Sepolia
+                    </button>
+                    <button
+                      onClick={() => switchToLocalhost().catch(console.error)}
+                      style={{
+                        flex: 1,
+                        backgroundColor: "rgba(255, 255, 255, 0.05)",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                        color: "#94a3b8",
+                        borderRadius: "6px",
+                        padding: "6px 8px",
+                        fontSize: "0.75rem",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Localhost
+                    </button>
+                  </div>
+
+                  <div style={{ fontSize: "0.72rem", color: "#64748b", padding: "4px 2px", lineHeight: "1.4" }}>
+                    💡 <strong>Tip:</strong> You can also switch accounts or networks anytime directly in your MetaMask extension.
+                  </div>
 
                   <button
                     onClick={() => {

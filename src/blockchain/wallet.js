@@ -82,17 +82,37 @@ export const SUPPORTED_NETWORKS = {
 };
 
 /**
+ * Detect the genuine MetaMask provider even if multiple wallet extensions are installed
+ */
+export function getMetaMaskProvider() {
+  if (typeof window === "undefined") return null;
+  const eth = window.ethereum;
+  if (!eth) return null;
+
+  // Handle multi-wallet injection (e.g. MetaMask + Coinbase + Phantom in same browser)
+  if (Array.isArray(eth.providers) && eth.providers.length > 0) {
+    const mm =
+      eth.providers.find((p) => p.isMetaMask && !p.isPhantom && !p.isBraveWallet) ||
+      eth.providers.find((p) => p.isMetaMask);
+    if (mm) return mm;
+  }
+
+  return eth;
+}
+
+/**
  * Request account connection via MetaMask (EIP-1102)
  */
 export async function connectMetaMask() {
-  if (typeof window === "undefined" || !window.ethereum) {
-    throw new Error("MetaMask is not detected. Please install the MetaMask extension.");
+  const eth = getMetaMaskProvider();
+  if (!eth) {
+    throw new Error("MetaMask is not detected. Please install or enable the MetaMask extension.");
   }
 
-  setActiveProvider(window.ethereum, WALLET_TYPES.METAMASK);
+  setActiveProvider(eth, WALLET_TYPES.METAMASK);
 
-  const provider = new ethers.BrowserProvider(window.ethereum);
-  const accounts = await window.ethereum.request({
+  const provider = new ethers.BrowserProvider(eth);
+  const accounts = await eth.request({
     method: "eth_requestAccounts",
   });
 
@@ -107,6 +127,7 @@ export async function connectMetaMask() {
     provider,
     signer,
     account: accounts[0].toLowerCase(),
+    allAccounts: accounts.map((a) => a.toLowerCase()),
     chainId: network.chainId.toString(),
     walletType: WALLET_TYPES.METAMASK,
   };
@@ -189,52 +210,67 @@ export async function disconnectWallet() {
 
 /**
  * Request account change / permissions selection from MetaMask (EIP-2255)
- * Forces MetaMask to open the account picker modal so the user can choose or switch accounts.
+ * Gracefully handles permissions, queries available accounts, and prevents hanging or crashing.
  */
 export async function requestAccountChange(ethereum = getActiveProvider()) {
-  if (typeof window === "undefined" || !ethereum) {
+  const eth = ethereum || getMetaMaskProvider();
+  if (!eth) {
     throw new Error("No active Web3 wallet provider detected.");
   }
 
+  let chosenAccount = null;
+
+  // 1. Try EIP-2255: Request new permissions, which prompts MetaMask's native account switcher modal
   try {
-    // EIP-2255: Request new permissions, which prompts MetaMask's native account switcher modal
-    await ethereum.request({
+    const permissions = await eth.request({
       method: "wallet_requestPermissions",
       params: [{ eth_accounts: {} }],
     });
-    const accounts = await ethereum.request({ method: "eth_accounts" });
-    if (!accounts || accounts.length === 0) {
-      throw new Error("No accounts selected.");
+    const caveat = permissions?.[0]?.caveats?.find(
+      (c) => c.type === "filterResponse"
+    );
+    if (caveat?.value && caveat.value.length > 0) {
+      chosenAccount = caveat.value[0];
     }
-    const provider = new ethers.BrowserProvider(ethereum);
-    const signer = await provider.getSigner();
-    const network = await provider.getNetwork();
-
-    return {
-      provider,
-      signer,
-      account: accounts[0].toLowerCase(),
-      chainId: network.chainId.toString(),
-    };
   } catch (err) {
-    if (err.code === 4001 || err.code === "ACTION_REJECTED") {
-      throw new Error("Account switch cancelled in MetaMask.");
-    }
-    // Fallback: try eth_requestAccounts
-    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-    if (accounts && accounts.length > 0) {
-      const provider = new ethers.BrowserProvider(ethereum);
-      const signer = await provider.getSigner();
-      const network = await provider.getNetwork();
-      return {
-        provider,
-        signer,
-        account: accounts[0].toLowerCase(),
-        chainId: network.chainId.toString(),
-      };
-    }
-    throw err;
+    // If user cancelled the permission dialog or it was already open/pending, log and continue to fallback
+    console.warn("wallet_requestPermissions prompt was closed or pending:", err);
   }
+
+  // 2. Query available authorized accounts
+  let accounts = [];
+  try {
+    accounts = await eth.request({ method: "eth_accounts" });
+  } catch {
+    // ignore
+  }
+
+  // 3. If no accounts, prompt eth_requestAccounts
+  if (!accounts || accounts.length === 0) {
+    accounts = await eth.request({ method: "eth_requestAccounts" });
+  }
+
+  if (!accounts || accounts.length === 0) {
+    throw new Error("No accounts available in MetaMask.");
+  }
+
+  // Use chosenAccount from permission prompt if available; otherwise use active accounts[0]
+  const finalAccount = (chosenAccount || accounts[0]).toLowerCase();
+
+  setActiveProvider(eth, WALLET_TYPES.METAMASK);
+
+  const provider = new ethers.BrowserProvider(eth);
+  const signer = await provider.getSigner();
+  const network = await provider.getNetwork();
+
+  return {
+    provider,
+    signer,
+    account: finalAccount,
+    allAccounts: accounts.map((a) => a.toLowerCase()),
+    chainId: network.chainId.toString(),
+    walletType: WALLET_TYPES.METAMASK,
+  };
 }
 
 /**
@@ -344,6 +380,38 @@ export async function switchToSepolia(ethereum = getActiveProvider()) {
 }
 
 /**
+ * Request network switch to Localhost / Ganache (1337)
+ */
+export async function switchToLocalhost(ethereum = getActiveProvider()) {
+  const eth = ethereum || getMetaMaskProvider();
+  if (!eth) throw new Error("No Web3 provider available.");
+
+  try {
+    await eth.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: "0x539" }],
+    });
+    return true;
+  } catch (err) {
+    if (err.code === 4902) {
+      await eth.request({
+        method: "wallet_addEthereumChain",
+        params: [
+          {
+            chainId: "0x539",
+            chainName: "Localhost / Ganache",
+            nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+            rpcUrls: ["http://127.0.0.1:8545", "http://127.0.0.1:7545"],
+          },
+        ],
+      });
+      return true;
+    }
+    throw err;
+  }
+}
+
+/**
  * Format address to 0x1234...5678 format
  */
 export function formatAddress(address) {
@@ -363,9 +431,11 @@ export function parseBlockchainError(error) {
   if (
     error.code === "ACTION_REJECTED" ||
     error.code === 4001 ||
-    (error.message && error.message.toLowerCase().includes("user rejected"))
+    (error.message && error.message.toLowerCase().includes("user rejected")) ||
+    (error.message && error.message.toLowerCase().includes("user denied")) ||
+    (error.message && error.message.toLowerCase().includes("rejected"))
   ) {
-    return "Transaction was rejected in MetaMask.";
+    return "Transaction was cancelled in wallet.";
   }
 
   // Contract custom errors

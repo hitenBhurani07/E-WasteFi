@@ -11,12 +11,10 @@ export const SEPOLIA_VAULT_ADDRESS = "0x4C8027D4fE6339FA9B764cA100af0cD7e20A032c
 // Experiment 1 deployed addresses on Localhost / Ganache / Hardhat
 export const LOCAL_REGISTRY_ADDRESS =
   import.meta.env.VITE_LOCAL_REGISTRY_ADDRESS ||
-  import.meta.env.VITE_REGISTRY_ADDRESS ||
   "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 export const LOCAL_VAULT_ADDRESS =
   import.meta.env.VITE_LOCAL_VAULT_ADDRESS ||
-  import.meta.env.VITE_VAULT_ADDRESS ||
   "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
 
 // Returns active contract addresses based on connected chain ID

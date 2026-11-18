@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { REWARD_RATES } from "../services/registryService";
 import TransactionStatus from "../components/TransactionStatus";
 import EmptyState from "../components/EmptyState";
-import { switchToSepolia } from "../blockchain/wallet";
+import { switchToSepolia, parseBlockchainError } from "../blockchain/wallet";
 
 export function RecyclePage({
   walletConnected,
@@ -112,11 +112,12 @@ export function RecyclePage({
       const isReject =
         err.code === "ACTION_REJECTED" ||
         err.code === 4001 ||
-        (err.message && err.message.toLowerCase().includes("rejected"));
+        (err.message && err.message.toLowerCase().includes("rejected")) ||
+        (err.message && err.message.toLowerCase().includes("denied"));
       setTxState({
         status: isReject ? "rejected" : "failed",
         txHash: null,
-        error: err.message || "Failed to submit transaction.",
+        error: isReject ? "Transaction was cancelled in wallet." : parseBlockchainError(err),
       });
     }
   };
