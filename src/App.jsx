@@ -18,9 +18,14 @@ import {
 import { getRewardBalance } from "./services/vaultService";
 import {
   connectMetaMask,
+  connectWalletConnect,
+  disconnectWallet,
   requestAccountChange,
   getAccounts,
   getNetwork,
+  getActiveProvider,
+  getActiveWalletType,
+  WALLET_TYPES,
   isSepoliaNetwork,
   isLocalNetwork,
   isValidNetwork,
@@ -31,6 +36,7 @@ import {
 // Shared Components
 import Sidebar from "./components/Sidebar";
 import TopBar from "./components/TopBar";
+import { ConnectWalletModal } from "./components/ConnectWalletModal";
 
 // Pages
 import DashboardPage from "./pages/DashboardPage";
@@ -56,6 +62,8 @@ function App() {
   const [isSupported, setIsSupported] = useState(false);
   const [networkName, setNetworkName] = useState("");
   const [role, setRole] = useState("User");
+  const [walletType, setWalletType] = useState(WALLET_TYPES.METAMASK);
+  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
 
   // On-chain data states (derived strictly from blockchain calls)
   const [submissions, setSubmissions] = useState([]);
@@ -86,10 +94,11 @@ function App() {
 
   // Load on-chain data for connected account
   const loadBlockchainData = useCallback(async (account, _targetChainId) => {
-    if (!window.ethereum || !account) return;
+    const activeEth = getActiveProvider() || (typeof window !== "undefined" ? window.ethereum : null);
+    if (!activeEth || !account) return;
     setIsLoading(true);
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(activeEth);
       const network = await provider.getNetwork();
       const currentChainId = network.chainId.toString();
       const onSepolia = isSepoliaNetwork(currentChainId);
@@ -147,19 +156,34 @@ function App() {
     }
   }, []);
 
-  // Connect wallet button trigger
-  const handleConnectWallet = async () => {
+  // Open wallet selection modal
+  const handleConnectWallet = () => {
+    setIsWalletModalOpen(true);
+  };
+
+  // Connect specific wallet type (MetaMask or WalletConnect)
+  const handleSelectWallet = async (selectedType) => {
     try {
       setIsLoading(true);
-      const result = await connectMetaMask();
+      let result;
+      if (selectedType === WALLET_TYPES.WALLETCONNECT) {
+        result = await connectWalletConnect();
+      } else {
+        result = await connectMetaMask();
+      }
+      setIsWalletModalOpen(false);
+      setWalletType(result.walletType || selectedType);
       setWalletAddress(result.account);
       setWalletConnected(true);
       setChainId(result.chainId);
       await loadBlockchainData(result.account, result.chainId);
-      showToast("Wallet connected successfully!");
+      showToast(`Connected via ${result.walletType || selectedType}!`);
     } catch (err) {
       console.error("Wallet connection error:", err);
-      showToast(parseBlockchainError(err), "error");
+      // Suppress toast if user merely closed the QR code modal or rejected
+      if (err.message && !err.message.includes("closed") && !err.message.includes("cancelled")) {
+        showToast(parseBlockchainError(err), "error");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -186,7 +210,8 @@ function App() {
   };
 
   // Disconnect wallet trigger
-  const handleDisconnectWallet = () => {
+  const handleDisconnectWallet = async () => {
+    await disconnectWallet();
     setWalletAddress("");
     setWalletConnected(false);
     setSubmissions([]);
@@ -196,9 +221,16 @@ function App() {
     showToast("Wallet disconnected.");
   };
 
+  // Helper to get active BrowserProvider
+  const getAppProvider = () => {
+    const eth = getActiveProvider() || (typeof window !== "undefined" ? window.ethereum : null);
+    if (!eth) throw new Error("No active Web3 wallet connected.");
+    return new ethers.BrowserProvider(eth);
+  };
+
   // E-waste submission action (Exp 1)
   const handleSubmitEwaste = async ({ category, quantity, weight }) => {
-    const provider = new ethers.BrowserProvider(window.ethereum);
+    const provider = getAppProvider();
     const signer = await provider.getSigner();
     const net = await provider.getNetwork();
     const addresses = getAddressesForChain(net.chainId);
@@ -208,7 +240,7 @@ function App() {
 
   // Recycler actions (Exp 1)
   const handleVerify = async (rawId) => {
-    const provider = new ethers.BrowserProvider(window.ethereum);
+    const provider = getAppProvider();
     const signer = await provider.getSigner();
     const net = await provider.getNetwork();
     const addresses = getAddressesForChain(net.chainId);
@@ -217,7 +249,7 @@ function App() {
   };
 
   const handleReject = async (rawId) => {
-    const provider = new ethers.BrowserProvider(window.ethereum);
+    const provider = getAppProvider();
     const signer = await provider.getSigner();
     const net = await provider.getNetwork();
     const addresses = getAddressesForChain(net.chainId);
@@ -226,7 +258,7 @@ function App() {
   };
 
   const handleIssueReward = async (rawId) => {
-    const provider = new ethers.BrowserProvider(window.ethereum);
+    const provider = getAppProvider();
     const signer = await provider.getSigner();
     const net = await provider.getNetwork();
     const addresses = getAddressesForChain(net.chainId);
@@ -239,14 +271,16 @@ function App() {
     let active = true;
 
     const checkInitialConnection = async () => {
-      if (!window.ethereum) return;
+      const activeEth = getActiveProvider() || (typeof window !== "undefined" ? window.ethereum : null);
+      if (!activeEth) return;
       try {
-        const accounts = await getAccounts(window.ethereum);
+        const accounts = await getAccounts(activeEth);
         if (accounts.length > 0 && active) {
           const account = accounts[0];
-          const net = await getNetwork(window.ethereum);
+          const net = await getNetwork(activeEth);
           setWalletAddress(account);
           setWalletConnected(true);
+          setWalletType(getActiveWalletType() || WALLET_TYPES.METAMASK);
           if (net) {
             setChainId(net.chainId);
             setIsSepolia(isSepoliaNetwork(net.chainId));
@@ -262,7 +296,8 @@ function App() {
 
     checkInitialConnection();
 
-    if (window.ethereum) {
+    const activeEth = getActiveProvider() || (typeof window !== "undefined" ? window.ethereum : null);
+    if (activeEth) {
       const handleAccountsChanged = async (accounts) => {
         if (!active) return;
         if (accounts && accounts.length > 0) {
@@ -285,14 +320,16 @@ function App() {
         window.location.reload();
       };
 
-      window.ethereum.on("accountsChanged", handleAccountsChanged);
-      window.ethereum.on("chainChanged", handleChainChanged);
+      if (activeEth.on) {
+        activeEth.on("accountsChanged", handleAccountsChanged);
+        activeEth.on("chainChanged", handleChainChanged);
+      }
 
       return () => {
         active = false;
-        if (window.ethereum.removeListener) {
-          window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
-          window.ethereum.removeListener("chainChanged", handleChainChanged);
+        if (activeEth.removeListener) {
+          activeEth.removeListener("accountsChanged", handleAccountsChanged);
+          activeEth.removeListener("chainChanged", handleChainChanged);
         }
       };
     }
@@ -435,6 +472,7 @@ function App() {
           activePage={activePage}
           walletConnected={walletConnected}
           walletAddress={walletAddress}
+          walletType={walletType}
           isSepolia={isSepolia}
           isSupported={isSupported}
           networkName={networkName}
@@ -504,6 +542,13 @@ function App() {
           </div>
         )}
       </main>
+      {/* WALLET SELECTION MODAL (METAMASK / WALLETCONNECT) */}
+      <ConnectWalletModal
+        isOpen={isWalletModalOpen}
+        onClose={() => setIsWalletModalOpen(false)}
+        onSelectWallet={handleSelectWallet}
+        isLoading={isLoading}
+      />
     </div>
   );
 }

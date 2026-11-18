@@ -5,6 +5,7 @@ export function TopBar({
   activePage,
   walletConnected,
   walletAddress,
+  walletType = "MetaMask",
   isSepolia,
   isSupported = true,
   networkName = "",
@@ -127,6 +128,9 @@ export function TopBar({
                   backgroundColor: isSupported ? "#10b981" : "#f59e0b",
                 }}
               ></span>
+              <span style={{ fontSize: "0.9rem" }}>
+                {walletType === "WalletConnect" ? "🌐" : "🦊"}
+              </span>
               <span>{formatAddress(walletAddress)}</span>
               <span style={{ fontSize: "0.7rem", opacity: 0.7 }}>▼</span>
             </button>
@@ -204,6 +208,13 @@ export function TopBar({
                   >
                     {copied ? "✔ Copied to clipboard" : "📋 Copy Address"}
                   </button>
+                </div>
+
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem", color: "#94a3b8" }}>
+                  <span>Provider:</span>
+                  <span style={{ color: "#38bdf8", fontWeight: "600" }}>
+                    {walletType === "WalletConnect" ? "🌐 WalletConnect" : "🦊 MetaMask"}
+                  </span>
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem", color: "#94a3b8" }}>

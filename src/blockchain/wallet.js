@@ -7,6 +7,49 @@ import {
   HARDHAT_CHAIN_ID,
 } from "../config/addresses";
 
+export const WALLET_TYPES = {
+  METAMASK: "MetaMask",
+  WALLETCONNECT: "WalletConnect",
+};
+
+// Global state tracking active provider (MetaMask or WalletConnect)
+let activeEIP1193Provider = null;
+let activeWalletType = null;
+let wcProviderInstance = null;
+
+/**
+ * Returns the currently active Web3 provider (MetaMask or WalletConnect)
+ */
+export function getActiveProvider() {
+  if (activeEIP1193Provider) return activeEIP1193Provider;
+  if (typeof window !== "undefined" && window.ethereum) return window.ethereum;
+  return null;
+}
+
+/**
+ * Returns the active wallet type name (MetaMask or WalletConnect)
+ */
+export function getActiveWalletType() {
+  if (activeWalletType) return activeWalletType;
+  if (typeof window !== "undefined" && window.ethereum) return WALLET_TYPES.METAMASK;
+  return null;
+}
+
+/**
+ * Sets the active provider
+ */
+export function setActiveProvider(provider, type = WALLET_TYPES.METAMASK) {
+  activeEIP1193Provider = provider;
+  activeWalletType = type;
+  if (typeof window !== "undefined" && !window.ethereum) {
+    try {
+      window.ethereum = provider;
+    } catch {
+      // ignore read-only window.ethereum
+    }
+  }
+}
+
 export const SUPPORTED_NETWORKS = {
   [SEPOLIA_CHAIN_ID]: {
     name: "Sepolia Testnet",
@@ -46,6 +89,8 @@ export async function connectMetaMask() {
     throw new Error("MetaMask is not detected. Please install the MetaMask extension.");
   }
 
+  setActiveProvider(window.ethereum, WALLET_TYPES.METAMASK);
+
   const provider = new ethers.BrowserProvider(window.ethereum);
   const accounts = await window.ethereum.request({
     method: "eth_requestAccounts",
@@ -63,16 +108,92 @@ export async function connectMetaMask() {
     signer,
     account: accounts[0].toLowerCase(),
     chainId: network.chainId.toString(),
+    walletType: WALLET_TYPES.METAMASK,
   };
+}
+
+/**
+ * Request connection via WalletConnect (v2) with QR Code Modal
+ * Enables connection from mobile wallets (MetaMask Mobile, Trust Wallet, Rainbow, etc.)
+ */
+export async function connectWalletConnect() {
+  const { EthereumProvider } = await import("@walletconnect/ethereum-provider");
+
+  const projectId =
+    import.meta.env.VITE_WALLETCONNECT_PROJECT_ID ||
+    "3fcc6bba6f1de962d911bb5b5c3dba68"; // Default Project ID for testing
+
+  const sepoliaId = Number(SEPOLIA_CHAIN_ID);
+  const localId = Number(LOCAL_CHAIN_ID);
+  const ganacheId = Number(GANACHE_CHAIN_ID);
+  const hardhatId = Number(HARDHAT_CHAIN_ID);
+
+  if (!wcProviderInstance) {
+    wcProviderInstance = await EthereumProvider.init({
+      projectId,
+      chains: [sepoliaId],
+      optionalChains: [localId, ganacheId, hardhatId],
+      showQrModal: true,
+      metadata: {
+        name: "E-WasteFi",
+        description: "Decentralized E-Waste Recycling & Rewards Protocol",
+        url: typeof window !== "undefined" ? window.location.origin : "https://e-wastefi.io",
+        icons: ["https://avatars.githubusercontent.com/u/37784886"],
+      },
+      rpcMap: {
+        [sepoliaId]: "https://rpc.sepolia.org",
+        [localId]: "http://127.0.0.1:8545",
+        [ganacheId]: "http://127.0.0.1:7545",
+        [hardhatId]: "http://127.0.0.1:8545",
+      },
+    });
+  }
+
+  // Trigger WalletConnect session & QR modal
+  await wcProviderInstance.connect();
+
+  const accounts = wcProviderInstance.accounts || [];
+  if (!accounts || accounts.length === 0) {
+    throw new Error("No accounts received from WalletConnect session.");
+  }
+
+  setActiveProvider(wcProviderInstance, WALLET_TYPES.WALLETCONNECT);
+
+  const provider = new ethers.BrowserProvider(wcProviderInstance);
+  const signer = await provider.getSigner();
+  const network = await provider.getNetwork();
+
+  return {
+    provider,
+    signer,
+    account: accounts[0].toLowerCase(),
+    chainId: network.chainId.toString(),
+    walletType: WALLET_TYPES.WALLETCONNECT,
+  };
+}
+
+/**
+ * Disconnect current wallet session
+ */
+export async function disconnectWallet() {
+  if (wcProviderInstance && activeWalletType === WALLET_TYPES.WALLETCONNECT) {
+    try {
+      await wcProviderInstance.disconnect();
+    } catch (e) {
+      console.warn("WalletConnect disconnect error:", e);
+    }
+  }
+  activeEIP1193Provider = null;
+  activeWalletType = null;
 }
 
 /**
  * Request account change / permissions selection from MetaMask (EIP-2255)
  * Forces MetaMask to open the account picker modal so the user can choose or switch accounts.
  */
-export async function requestAccountChange(ethereum = window.ethereum) {
+export async function requestAccountChange(ethereum = getActiveProvider()) {
   if (typeof window === "undefined" || !ethereum) {
-    throw new Error("MetaMask is not detected. Please install the MetaMask extension.");
+    throw new Error("No active Web3 wallet provider detected.");
   }
 
   try {
@@ -119,7 +240,7 @@ export async function requestAccountChange(ethereum = window.ethereum) {
 /**
  * Get currently connected accounts without prompting popup
  */
-export async function getAccounts(ethereum = window.ethereum) {
+export async function getAccounts(ethereum = getActiveProvider()) {
   if (!ethereum) return [];
   try {
     const accounts = await ethereum.request({ method: "eth_accounts" });
@@ -133,7 +254,7 @@ export async function getAccounts(ethereum = window.ethereum) {
 /**
  * Get current network details
  */
-export async function getNetwork(ethereum = window.ethereum) {
+export async function getNetwork(ethereum = getActiveProvider()) {
   if (!ethereum) return null;
   try {
     const chainIdHex = await ethereum.request({ method: "eth_chainId" });
@@ -188,7 +309,7 @@ export function isSepoliaNetwork(chainId) {
 /**
  * Request network switch to Sepolia
  */
-export async function switchToSepolia(ethereum = window.ethereum) {
+export async function switchToSepolia(ethereum = getActiveProvider()) {
   if (!ethereum) throw new Error("No Web3 provider available.");
 
   try {
