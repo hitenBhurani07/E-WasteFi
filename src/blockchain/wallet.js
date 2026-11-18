@@ -461,6 +461,10 @@ export function parseBlockchainError(error) {
   }
 
   const msg = error.message || error.toString() || "";
+  const data = error.data || error.info?.error?.data || "";
+  if (msg.includes("0xca59a9e8") || data.includes("0xca59a9e8") || msg.includes("NotRecycler")) {
+    return "Not authorized: Only registered recyclers can verify or issue rewards.";
+  }
   if (msg.includes("insufficient funds")) return "Insufficient ETH for gas fees.";
   if (msg.includes("NotRecycler")) return "Not authorized: Recycler role required.";
   if (msg.includes("SubmissionNotFound")) return "Submission does not exist.";

@@ -10,101 +10,101 @@ import * as Contracts from "./index.js";
 
 declare module "@nomicfoundation/hardhat-ethers/types" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
-  getContractFactory(name: 'EWasteRegistry', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWasteRegistry__factory>
+  getContractFactory(name: 'EWasteRewardVault', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWasteRewardVault__factory>
+getContractFactory(name: 'EWasteRegistry', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWasteRegistry__factory>
 getContractFactory(name: 'IRewardVault', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.IRewardVault__factory>
 getContractFactory(name: 'EWasteRewardVault', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWasteRewardVault__factory>
 getContractFactory(name: 'EWasteRegistry', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWasteRegistry__factory>
 getContractFactory(name: 'IRewardVault', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.IRewardVault__factory>
-getContractFactory(name: 'EWasteRewardVault', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWasteRewardVault__factory>
+getContractFactory(name: 'EWasteAssetToken', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWasteAssetToken__factory>
 getContractFactory(name: 'EWasteFiVault', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWasteFiVault__factory>
+getContractFactory(name: 'RWRToken', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.RWRToken__factory>
+getContractFactory(name: 'EWRToken', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWRToken__factory>
+getContractFactory(name: 'SimpleYieldFarm', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.SimpleYieldFarm__factory>
 getContractFactory(name: 'EWasteAMM', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWasteAMM__factory>
 getContractFactory(name: 'EWasteRewardToken', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWasteRewardToken__factory>
 getContractFactory(name: 'EWasteToken', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWasteToken__factory>
-getContractFactory(name: 'EWasteAssetToken', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWasteAssetToken__factory>
 getContractFactory(name: 'EREWARDToken', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EREWARDToken__factory>
 getContractFactory(name: 'EWasteFactory', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWasteFactory__factory>
 getContractFactory(name: 'EWastePair', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWastePair__factory>
+getContractFactory(name: 'EWasteRouter', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWasteRouter__factory>
 getContractFactory(name: 'EWASTEToken', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWASTEToken__factory>
-getContractFactory(name: 'EWRToken', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWRToken__factory>
-getContractFactory(name: 'RWRToken', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.RWRToken__factory>
-getContractFactory(name: 'EWastePriceConsumer', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWastePriceConsumer__factory>
-getContractFactory(name: 'SimpleYieldFarm', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.SimpleYieldFarm__factory>
 getContractFactory(name: 'AggregatorV3Interface', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.AggregatorV3Interface__factory>
 getContractFactory(name: 'MockPriceFeed', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.MockPriceFeed__factory>
-getContractFactory(name: 'EWasteRouter', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWasteRouter__factory>
 getContractFactory(name: 'SafeEWastePriceConsumer', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.SafeEWastePriceConsumer__factory>
+getContractFactory(name: 'EWastePriceConsumer', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EWastePriceConsumer__factory>
 
-  getContractAt(name: 'EWasteRegistry', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWasteRegistry>
+  getContractAt(name: 'EWasteRewardVault', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWasteRewardVault>
+getContractAt(name: 'EWasteRegistry', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWasteRegistry>
 getContractAt(name: 'IRewardVault', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.IRewardVault>
 getContractAt(name: 'EWasteRewardVault', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWasteRewardVault>
 getContractAt(name: 'EWasteRegistry', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWasteRegistry>
 getContractAt(name: 'IRewardVault', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.IRewardVault>
-getContractAt(name: 'EWasteRewardVault', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWasteRewardVault>
+getContractAt(name: 'EWasteAssetToken', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWasteAssetToken>
 getContractAt(name: 'EWasteFiVault', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWasteFiVault>
+getContractAt(name: 'RWRToken', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.RWRToken>
+getContractAt(name: 'EWRToken', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWRToken>
+getContractAt(name: 'SimpleYieldFarm', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.SimpleYieldFarm>
 getContractAt(name: 'EWasteAMM', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWasteAMM>
 getContractAt(name: 'EWasteRewardToken', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWasteRewardToken>
 getContractAt(name: 'EWasteToken', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWasteToken>
-getContractAt(name: 'EWasteAssetToken', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWasteAssetToken>
 getContractAt(name: 'EREWARDToken', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EREWARDToken>
 getContractAt(name: 'EWasteFactory', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWasteFactory>
 getContractAt(name: 'EWastePair', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWastePair>
+getContractAt(name: 'EWasteRouter', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWasteRouter>
 getContractAt(name: 'EWASTEToken', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWASTEToken>
-getContractAt(name: 'EWRToken', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWRToken>
-getContractAt(name: 'RWRToken', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.RWRToken>
-getContractAt(name: 'EWastePriceConsumer', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWastePriceConsumer>
-getContractAt(name: 'SimpleYieldFarm', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.SimpleYieldFarm>
 getContractAt(name: 'AggregatorV3Interface', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.AggregatorV3Interface>
 getContractAt(name: 'MockPriceFeed', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.MockPriceFeed>
-getContractAt(name: 'EWasteRouter', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWasteRouter>
 getContractAt(name: 'SafeEWastePriceConsumer', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.SafeEWastePriceConsumer>
+getContractAt(name: 'EWastePriceConsumer', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EWastePriceConsumer>
 
-  deployContract(name: 'EWasteRegistry', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRegistry>
+  deployContract(name: 'EWasteRewardVault', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRewardVault>
+deployContract(name: 'EWasteRegistry', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRegistry>
 deployContract(name: 'IRewardVault', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.IRewardVault>
 deployContract(name: 'EWasteRewardVault', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRewardVault>
 deployContract(name: 'EWasteRegistry', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRegistry>
 deployContract(name: 'IRewardVault', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.IRewardVault>
-deployContract(name: 'EWasteRewardVault', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRewardVault>
+deployContract(name: 'EWasteAssetToken', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteAssetToken>
 deployContract(name: 'EWasteFiVault', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteFiVault>
+deployContract(name: 'RWRToken', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.RWRToken>
+deployContract(name: 'EWRToken', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWRToken>
+deployContract(name: 'SimpleYieldFarm', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.SimpleYieldFarm>
 deployContract(name: 'EWasteAMM', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteAMM>
 deployContract(name: 'EWasteRewardToken', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRewardToken>
 deployContract(name: 'EWasteToken', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteToken>
-deployContract(name: 'EWasteAssetToken', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteAssetToken>
 deployContract(name: 'EREWARDToken', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EREWARDToken>
 deployContract(name: 'EWasteFactory', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteFactory>
 deployContract(name: 'EWastePair', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWastePair>
+deployContract(name: 'EWasteRouter', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRouter>
 deployContract(name: 'EWASTEToken', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWASTEToken>
-deployContract(name: 'EWRToken', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWRToken>
-deployContract(name: 'RWRToken', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.RWRToken>
-deployContract(name: 'EWastePriceConsumer', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWastePriceConsumer>
-deployContract(name: 'SimpleYieldFarm', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.SimpleYieldFarm>
 deployContract(name: 'AggregatorV3Interface', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.AggregatorV3Interface>
 deployContract(name: 'MockPriceFeed', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.MockPriceFeed>
-deployContract(name: 'EWasteRouter', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRouter>
 deployContract(name: 'SafeEWastePriceConsumer', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.SafeEWastePriceConsumer>
+deployContract(name: 'EWastePriceConsumer', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWastePriceConsumer>
 
-  deployContract(name: 'EWasteRegistry', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRegistry>
+  deployContract(name: 'EWasteRewardVault', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRewardVault>
+deployContract(name: 'EWasteRegistry', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRegistry>
 deployContract(name: 'IRewardVault', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.IRewardVault>
 deployContract(name: 'EWasteRewardVault', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRewardVault>
 deployContract(name: 'EWasteRegistry', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRegistry>
 deployContract(name: 'IRewardVault', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.IRewardVault>
-deployContract(name: 'EWasteRewardVault', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRewardVault>
+deployContract(name: 'EWasteAssetToken', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteAssetToken>
 deployContract(name: 'EWasteFiVault', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteFiVault>
+deployContract(name: 'RWRToken', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.RWRToken>
+deployContract(name: 'EWRToken', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWRToken>
+deployContract(name: 'SimpleYieldFarm', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.SimpleYieldFarm>
 deployContract(name: 'EWasteAMM', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteAMM>
 deployContract(name: 'EWasteRewardToken', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRewardToken>
 deployContract(name: 'EWasteToken', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteToken>
-deployContract(name: 'EWasteAssetToken', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteAssetToken>
 deployContract(name: 'EREWARDToken', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EREWARDToken>
 deployContract(name: 'EWasteFactory', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteFactory>
 deployContract(name: 'EWastePair', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWastePair>
+deployContract(name: 'EWasteRouter', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRouter>
 deployContract(name: 'EWASTEToken', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWASTEToken>
-deployContract(name: 'EWRToken', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWRToken>
-deployContract(name: 'RWRToken', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.RWRToken>
-deployContract(name: 'EWastePriceConsumer', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWastePriceConsumer>
-deployContract(name: 'SimpleYieldFarm', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.SimpleYieldFarm>
 deployContract(name: 'AggregatorV3Interface', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.AggregatorV3Interface>
 deployContract(name: 'MockPriceFeed', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.MockPriceFeed>
-deployContract(name: 'EWasteRouter', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWasteRouter>
 deployContract(name: 'SafeEWastePriceConsumer', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.SafeEWastePriceConsumer>
+deployContract(name: 'EWastePriceConsumer', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EWastePriceConsumer>
 
     // default types
     getContractFactory(

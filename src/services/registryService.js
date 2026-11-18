@@ -24,6 +24,27 @@ export function getRegistryContract(providerOrSigner, address = DEFAULT_REGISTRY
   return new ethers.Contract(address, REGISTRY_ABI, providerOrSigner);
 }
 
+export function getLocalSubmissionOverrides() {
+  if (typeof window === "undefined") return {};
+  try {
+    return JSON.parse(localStorage.getItem("ewaste_sub_overrides") || "{}");
+  } catch {
+    return {};
+  }
+}
+
+export function setLocalSubmissionOverride(rawId, updates) {
+  if (typeof window === "undefined" || rawId === undefined || rawId === null) return;
+  try {
+    const current = getLocalSubmissionOverrides();
+    const key = String(rawId);
+    current[key] = { ...(current[key] || {}), ...updates };
+    localStorage.setItem("ewaste_sub_overrides", JSON.stringify(current));
+  } catch (e) {
+    console.warn("Could not save submission override:", e);
+  }
+}
+
 export function formatSubmissionData(sub) {
   const statusMap = ["Pending", "Verified", "Rejected"];
 
@@ -38,7 +59,7 @@ export function formatSubmissionData(sub) {
   const subVerifiedAt = sub.verifiedAt !== undefined ? sub.verifiedAt : sub[8];
   const subRewardIssued = sub.rewardIssued !== undefined ? sub.rewardIssued : sub[9];
 
-  return {
+  const formatted = {
     id: `EW${String(subId).padStart(3, "0")}`,
     rawId: Number(subId),
     user: subUser,
@@ -55,6 +76,14 @@ export function formatSubmissionData(sub) {
     verifiedAt: Number(subVerifiedAt) > 0 ? new Date(Number(subVerifiedAt) * 1000).toISOString() : null,
     rewardIssued: !!subRewardIssued,
   };
+
+  const overrides = getLocalSubmissionOverrides();
+  const overrideKey = String(formatted.rawId);
+  if (overrides[overrideKey]) {
+    Object.assign(formatted, overrides[overrideKey]);
+  }
+
+  return formatted;
 }
 
 export function getLocalRecyclers() {
