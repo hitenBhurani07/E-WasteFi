@@ -12,6 +12,7 @@ export function TopBar({
   role,
   onConnect,
   onSwitchAccount,
+  onToggleRole,
   onDisconnect,
   onRefresh,
   isLoading,
@@ -224,11 +225,31 @@ export function TopBar({
                   </span>
                 </div>
 
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem", color: "#94a3b8" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.8rem", color: "#94a3b8" }}>
                   <span>Current Role:</span>
-                  <span style={{ color: role === "Recycler" ? "#4ade80" : "#e2e8f0", fontWeight: "600" }}>
-                    {role}
-                  </span>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <span style={{ color: role === "Recycler" ? "#4ade80" : "#e2e8f0", fontWeight: "600" }}>
+                      {role}
+                    </span>
+                    {onToggleRole && (
+                      <button
+                        onClick={onToggleRole}
+                        title="Toggle Role for Demonstration"
+                        style={{
+                          backgroundColor: role === "Recycler" ? "rgba(239, 68, 68, 0.15)" : "rgba(74, 222, 128, 0.15)",
+                          border: role === "Recycler" ? "1px solid rgba(239, 68, 68, 0.3)" : "1px solid rgba(74, 222, 128, 0.3)",
+                          color: role === "Recycler" ? "#ef4444" : "#4ade80",
+                          borderRadius: "4px",
+                          fontSize: "0.7rem",
+                          padding: "2px 6px",
+                          cursor: "pointer",
+                          fontWeight: "500",
+                        }}
+                      >
+                        {role === "Recycler" ? "Make User" : "Make Recycler"}
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>

@@ -12,6 +12,7 @@ export function RecyclerPanelPage({
   onReject,
   onIssueReward,
   onConnect,
+  onAuthorizeRecycler,
   formatDate,
   isLoading,
 }) {
@@ -107,16 +108,44 @@ export function RecyclerPanelPage({
       </div>
 
       {!isRecyclerRole && walletConnected && (
-        <div className="warning-notice-banner">
-          <span>ℹ</span>
-          <div>
-            <strong>You are currently connected as: {role}</strong>
-            <p>
-              Only authorized recyclers (whitelisted on the <code>EWasteRegistry</code> contract by the owner)
-              can call <code>verifySubmission()</code>, <code>rejectSubmission()</code>, or <code>issueReward()</code>.
-              You can inspect all submissions below.
-            </p>
+        <div
+          className="warning-notice-banner"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "12px",
+          }}
+        >
+          <div style={{ display: "flex", gap: "10px", alignItems: "flex-start", flex: "1" }}>
+            <span style={{ fontSize: "1.2rem" }}>ℹ</span>
+            <div>
+              <strong>Connected Account is currently: {role}</strong>
+              <p style={{ margin: "4px 0 0 0", fontSize: "0.85rem", color: "#cbd5e1" }}>
+                This account is not yet marked as an Authorized Recycler. Click the button to authorize this account for verification and reward testing.
+              </p>
+            </div>
           </div>
+          {onAuthorizeRecycler && (
+            <button
+              onClick={onAuthorizeRecycler}
+              style={{
+                backgroundColor: "#10b981",
+                border: "none",
+                color: "#fff",
+                padding: "8px 16px",
+                borderRadius: "8px",
+                fontWeight: "600",
+                fontSize: "0.85rem",
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+                boxShadow: "0 2px 4px rgba(16, 185, 129, 0.2)",
+              }}
+            >
+              🛡️ Authorize as Recycler
+            </button>
+          )}
         </div>
       )}
 

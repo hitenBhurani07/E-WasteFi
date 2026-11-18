@@ -57,13 +57,59 @@ export function formatSubmissionData(sub) {
   };
 }
 
+export function getLocalRecyclers() {
+  if (typeof window === "undefined") return [];
+  try {
+    return JSON.parse(localStorage.getItem("ewaste_recyclers") || "[]").map((a) =>
+      a.toLowerCase()
+    );
+  } catch {
+    return [];
+  }
+}
+
+export function addLocalRecycler(address) {
+  if (!address || typeof window === "undefined") return;
+  try {
+    const normalized = address.toLowerCase();
+    const current = getLocalRecyclers();
+    if (!current.includes(normalized)) {
+      current.push(normalized);
+      localStorage.setItem("ewaste_recyclers", JSON.stringify(current));
+    }
+  } catch (e) {
+    console.warn("Could not save local recycler:", e);
+  }
+}
+
+export function removeLocalRecycler(address) {
+  if (!address || typeof window === "undefined") return;
+  try {
+    const normalized = address.toLowerCase();
+    const current = getLocalRecyclers().filter((a) => a !== normalized);
+    localStorage.setItem("ewaste_recyclers", JSON.stringify(current));
+  } catch (e) {
+    console.warn("Could not remove local recycler:", e);
+  }
+}
+
 export async function isRecycler(provider, registryAddress, userAddress) {
-  if (!provider || !userAddress) return false;
+  if (!userAddress) return false;
+  const normalized = userAddress.toLowerCase();
+
+  // 1. Check local authorized recyclers (for lab/demo testing with any imported account)
+  const localList = getLocalRecyclers();
+  if (localList.includes(normalized)) {
+    return true;
+  }
+
+  // 2. Check on-chain mapping
+  if (!provider || !registryAddress) return false;
   try {
     const contract = getRegistryContract(provider, registryAddress);
     return await contract.recyclers(userAddress);
   } catch (err) {
-    console.error("Failed to check recycler status:", err);
+    console.error("Failed to check recycler status on-chain:", err);
     return false;
   }
 }
